@@ -1,0 +1,85 @@
+﻿<Window x:Class="Kalkulačka_v2.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Kalkulačka_v2"
+        mc:Ignorable="d"
+        Title="Kalkulačka" 
+        Height="450"
+        Width="300"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize" 
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        MouseDown="Window_MouseDown"
+        KeyDown="Keyboard_Pressed">
+
+    <Border CornerRadius="20"
+            Background="#009FFC">
+
+        <Grid Margin="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="100"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid x:Name="TopGrid">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="30"/>
+                    <ColumnDefinition Width="30"/>
+                </Grid.ColumnDefinitions>
+                <Button Grid.Column="1" Grid.Row="0" Click="MinimizeWindowBttn_Click" BorderThickness="0" Background="Transparent" Foreground="LightGoldenrodYellow">-</Button>
+                <Button Grid.Column="2" Grid.Row="0" Click="CloseWindowBttn_Click" BorderThickness="0" Background="Transparent" Foreground="LightGoldenrodYellow">X</Button>
+
+
+            </Grid>
+            <Grid Grid.Row="1" Background="LightBlue" Margin="0,5,0,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="10"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="30"/>
+                </Grid.RowDefinitions>
+                <TextBlock x:Name="ResultTB" Grid.Row="1" Background="Transparent" TextAlignment="Right" VerticalAlignment="Center" Text="" HorizontalAlignment="Right" Padding="5,0,5,0" Foreground="Black" FontSize="40"></TextBlock>
+                <TextBlock x:Name="WorkPlaceTB" Grid.Row="2" Background="Transparent" TextAlignment="Right" VerticalAlignment="Center" Text="" HorizontalAlignment="Right" Padding="5,0,5,0" Foreground="Black" FontSize="20"></TextBlock>
+            </Grid>
+            <Grid Margin="0,10,0,0" Grid.Row="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="61*"/>
+                    <RowDefinition Height="60"/>
+                    <RowDefinition Height="58.4"/>
+                    <RowDefinition Height="54.4"/>
+                    <RowDefinition Height="56*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="70"/>
+                    <ColumnDefinition Width="70"/>
+                    <ColumnDefinition Width="70"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Button x:Name ="DelAllBttn" Click="DeleteAll" Grid.Row="0" Grid.Column="0" Margin="5,5,5.4,5.8">C</Button>
+                <Button x:Name ="DelBttn" Click="Delete" Grid.Row="0" Grid.Column="1" Margin="4.6,5,4.8,5.8">&lt;=</Button>
+                <Button x:Name ="PercBttn" Click="Percent" Grid.Row="0" Grid.Column="2" Margin="5.2,5,4.8,5.8">%</Button>
+                <Button x:Name ="DivBttn" Click="Divide" Grid.Row="0" Grid.Column="3" Margin="5.2,5,4.4,5.8">÷</Button>
+                <Button x:Name ="SevenBttn" Click="Seven" Grid.Row="1" Grid.Column="0" Margin="5,4.2,5.4,4.8">7</Button>
+                <Button x:Name ="EightBttn" Click="Eight" Grid.Row="1" Grid.Column="1" Margin="4.6,4.2,4.8,4.8">8</Button>
+                <Button x:Name ="NineBttn" Click="Nine" Grid.Row="1" Grid.Column="2" Margin="5.2,4.2,4.8,4.8">9</Button>
+                <Button x:Name ="MultBttn" Click="Mulitply" Grid.Row="1" Grid.Column="3" Margin="5.2,4.2,4.4,4.8">X</Button>
+                <Button x:Name ="FourBttn" Click="Four" Grid.Row="2" Grid.Column="0" Margin="5,5.2,5.4,6.2">4</Button>
+                <Button x:Name ="FiveBttn" Click="Five" Grid.Row="2" Grid.Column="1" Margin="4.6,5.2,4.8,6.2">5</Button>
+                <Button x:Name ="SixBttn" Click="Six" Grid.Row="2" Grid.Column="2" Margin="5.2,5.2,4.8,6.2">6</Button>
+                <Button x:Name ="MinusBttn" Click="Minus" Grid.Row="2" Grid.Column="3" Margin="5.2,5.2,4.4,6.2">-</Button>
+                <Button x:Name ="OneBttn" Click="One" Grid.Row="3" Grid.Column="0" Margin="5,3.8,5.4,5.6">1</Button>
+                <Button x:Name ="TwoBttn" Click="Two" Grid.Row="3" Grid.Column="1" Margin="4.6,3.8,4.8,5.6">2</Button>
+                <Button x:Name ="ThreeBttn" Click="Three" Grid.Row="3" Grid.Column="2" Margin="5.2,3.8,4.8,5.6">3</Button>
+                <Button x:Name ="PlusBttn" Click="Plus" Grid.Row="3" Grid.Column="3" Margin="5.2,3.8,4.4,5.6">+</Button>
+                <Button x:Name ="ZeroBttn" Click="Zero" Grid.Row="4" Grid.Column="0" Margin="5,4.4,5.4,4.6">0</Button>
+                <Button x:Name ="ZerosBttn" Click="TwoZeros" Grid.Row="4" Grid.Column="1" Margin="4.6,4.4,4.8,4.6">00</Button>
+                <Button x:Name ="PointBttn" Click="Point" Grid.Row="4" Grid.Column="2" Margin="5.2,4.4,4.8,4.6">,</Button>
+                <Button x:Name ="EqualsBttn" Click="Equals" Grid.Row="4" Grid.Column="3" Margin="5.2,4.4,4.4,4.6">=</Button>
+            </Grid>
+        </Grid>
+    </Border>
+</Window>
