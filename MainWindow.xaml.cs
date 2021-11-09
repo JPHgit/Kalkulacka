@@ -53,6 +53,14 @@ namespace Kalkulačka_v2
         {
             ShowCalculation();
             ShowResult();
+            UnfocusButton();       }
+
+        private void UnfocusButton()
+        {
+            DependencyObject scope = FocusManager.GetFocusScope(this);
+            FocusManager.SetFocusedElement(scope, null);
+            Keyboard.ClearFocus();
+            MainWind.Focus();
         }
 
         // zadávaní znaků do kalkulace a zobrazení změn
@@ -195,57 +203,45 @@ namespace Kalkulačka_v2
             // zpracovává input zadaný klávesnicí a spouští klik na jednotlivé tlačítka
             switch (e.Key)
             {
-                case Key.D0:
                 case Key.NumPad0:
                     ZeroBttn.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
                     break;
-                case Key.D1:
                 case Key.NumPad1:
                     OneBttn.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
                     break;
-                case Key.D2:
                 case Key.NumPad2:
                     TwoBttn.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
                     break;
-                case Key.D3:
                 case Key.NumPad3:
                     ThreeBttn.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
                     break;
-                case Key.D4:
                 case Key.NumPad4:
                     FourBttn.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
                     break;
-                case Key.D5:
                 case Key.NumPad5:
                     FiveBttn.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
                     break;
-                case Key.D6:
                 case Key.NumPad6:
                     SixBttn.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
                     break;
-                case Key.D7:
                 case Key.NumPad7:
                     SevenBttn.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
                     break;
-                case Key.D8:
                 case Key.NumPad8:
                     EightBttn.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
                     break;
-                case Key.D9:
                 case Key.NumPad9:
                     NineBttn.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
                     break;
                 case Key.Multiply:
                     MultBttn.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
                     break;
-                case Key.OemMinus:
                 case Key.Subtract:
                     MinusBttn.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
                     break;
                 case Key.Divide:
                     DivBttn.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
                     break;
-                case Key.OemQuestion:
                 case Key.Add:
                     PlusBttn.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
                     break;
@@ -295,21 +291,27 @@ namespace Kalkulačka_v2
         }
 
         private void ShowHistory(object sender, RoutedEventArgs e)
-        { 
-            string history = "";
-            cnn = new SqlConnection(connectionString);
+        {
+            try { 
+                string history = "";
+                cnn = new SqlConnection(connectionString);
 
-            cnn.Open();
-            using(SqlCommand command = 
-                new SqlCommand("SELECT * FROM History ORDER BY CId DESC", cnn))
-            {
-                SqlDataReader dataReader = command.ExecuteReader();
-                if(dataReader.Read()) history = dataReader.GetValue(1).ToString();
+                cnn.Open();
+            
+                using (SqlCommand command =
+                    new SqlCommand("SELECT * FROM History ORDER BY CId DESC", cnn))
+                {
+                    SqlDataReader dataReader = command.ExecuteReader();
+                    if (dataReader.Read()) history = dataReader.GetValue(1).ToString();
+                    command.Dispose();
+                }
+           
+                cnn.Close();
+
+                calculation.SetFromHistory(history);
+                ShowData();
             }
-            cnn.Close();
-
-            calculation.SetFromHistory(history);
-            ShowData();
+            catch { }
         }
     }
 }

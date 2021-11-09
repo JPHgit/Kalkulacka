@@ -14,7 +14,9 @@
         AllowsTransparency="True"
         Background="Transparent"
         MouseDown="Window_MouseDown"
-        KeyDown="Keyboard_Pressed">
+        KeyDown="Keyboard_Pressed"
+        Focusable="True"
+        x:Name="MainWind">
 
     <Border CornerRadius="20"
             Background="#009FFC">
