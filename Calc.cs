@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Data;
-using System.Diagnostics;
 
 namespace Kalkulačka_v2
 {
@@ -69,6 +68,7 @@ namespace Kalkulačka_v2
 
         private void CheckCharAndAdd(char c)
         {
+            // když je char '%' zkontroluje jestli není vstupní text prázdný a přidá značku poté zkusí zkontrolovat jestli nejsou dva znaky '%' za sebou
             if (c == '%')
             { 
                 if(main_Text != "") main_Text += c;
@@ -82,6 +82,9 @@ namespace Kalkulačka_v2
                 }
                 catch { }
             } 
+            // pokud je char symbol některé z operací zkontroluje jestli není vstupní text prázdný, pokud je vloží počáteční hodnotu 0
+            // pokud je poslední znak ve vstupním textu symbol některé z početních operací odstraní jej
+            // nakonec přidá char do vstupního textu
             else if (signs.Contains(c))
             {
                 if (main_Text == "") main_Text = "0";
@@ -92,6 +95,9 @@ namespace Kalkulačka_v2
                 }
                 main_Text += c;
             } 
+
+            // pokud je char '.' přidá ho do vstupního textu, rozdělí jej na čísla a zkontroluje jestli některé číslo neobsahuje dva znaky '.'
+            // pokud obsahuje dva znaky '.' odstraní poslední přidaný
             else if(c == '.')
             {
                 main_Text += c;
@@ -106,6 +112,8 @@ namespace Kalkulačka_v2
                 }
                 catch { }
             } 
+            // char nesplňuje žádnou if podmínku, zkontrolujeme jestli vstupní text není prázdný a pak jeho poslední character, pokud to není '%' přidá char do vstupního textu
+            // pokud je vstupní text prázdný přidá char do vstupního text
             else
             {
                 if (main_Text != "")
@@ -170,11 +178,17 @@ namespace Kalkulačka_v2
                 {
                     calc_Text = FormatPercent(ref id); // zformátuje 'calc_Text' pro správný výpočet
                     calc_Text = calc_Text.Replace(',', '.');    // nahradí znak ',' znakem '.' aby fungoval výpočet
-                    Trace.WriteLine(calc_Text);
                 }
                 id++;   // zvýší hodnotu id
                 
             }
+        }
+
+        public void SetFromHistory(string history)
+        {
+            main_Text = history;
+            SetCalcText();
+            Calculate();
         }
 
         public void SetCalculationToNull()

@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Windows;
-using System.Collections.Generic;
 using System.Windows.Input;
 using System.Windows.Controls.Primitives;
+using System.Data.SqlClient;
+using System.Diagnostics;
 
 namespace Kalkulačka_v2
 {
@@ -11,42 +12,50 @@ namespace Kalkulačka_v2
     /// </summary>
     public partial class MainWindow : Window
     {
+        private SqlConnection cnn;
         private Calc calculation;
-        private Dictionary<string, string> history;
+        private string connectionString;
+
         public MainWindow()
         {
             InitializeComponent();
             calculation = new Calc();
             ShowData();
-            history = new Dictionary<string, string>();
+            connectionString = @"Server=LAPTOP-98H4NLF2\SQLEXPRESS;Database=calc_history;Trusted_Connection=True";
         }
 
+        // zavření programu
         private void CloseWindowBttn_Click(object sender, RoutedEventArgs e)
         {
             Environment.Exit(0);
         }
 
+        // minimalizace okna
         private void MinimizeWindowBttn_Click(object sender, RoutedEventArgs e)
         {
             this.WindowState = WindowState.Minimized;
         }
 
+        //zobrazení kalkulace
         private void ShowCalculation()
         {
             WorkPlaceTB.Text = calculation.GetCalculation();
         }
 
+        //zobrazení výsledku
         private void ShowResult()
         {
             ResultTB.Text = calculation.GetResult();
         }
 
+        // zobrazení změn
         private void ShowData()
         {
             ShowCalculation();
             ShowResult();
         }
 
+        // zadávaní znaků do kalkulace a zobrazení změn
         private void DeleteAll(object sender, RoutedEventArgs e)
         {
             calculation.SetCalculationToNull();
@@ -163,9 +172,10 @@ namespace Kalkulačka_v2
 
         private void Equals(object sender, RoutedEventArgs e)
         {
+            // pokud byla provedena nějaká kalkulace uloží ji do historie a spustí novou kalkulaci, nechá zobrazený poslední výsledek
             if (calculation.GetCalculation() != "")
             {
-                history.Add(calculation.GetCalculation(), calculation.GetResult());
+                InsertToDB(calculation.GetCalculation(), Convert.ToDouble(calculation.GetResult()));
                 calculation = new Calc();
                 ShowCalculation();
             }
@@ -173,6 +183,7 @@ namespace Kalkulačka_v2
 
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
         {
+            // pokud je ve aplikaci stiknuté levé tlačítko nad kterýkoliv jiným elementem než button spustí funkci pro přesun okna po obrazovce
             if (e.ChangedButton == MouseButton.Left)
             {
                 this.DragMove();
@@ -181,7 +192,7 @@ namespace Kalkulačka_v2
 
         private void Keyboard_Pressed(object sender, KeyEventArgs e)
         {
-
+            // zpracovává input zadaný klávesnicí a spouští klik na jednotlivé tlačítka
             switch (e.Key)
             {
                 case Key.D0:
@@ -255,7 +266,50 @@ namespace Kalkulačka_v2
                     break;
                 default:
                     break;
-            }  
+            }
+        }
+
+        private void InsertToDB(string calc, double result)
+        {
+            cnn = new SqlConnection(connectionString);
+            using (cnn)
+            {
+                cnn.Open();
+
+                using (SqlCommand command =
+                   new SqlCommand("INSERT INTO History (Calculation, Result) VALUES (@calc, @res)", cnn))
+                {
+                    
+                    command.Parameters.Add(new SqlParameter("calc", calc));
+                    command.Parameters.Add(new SqlParameter("res", result));
+
+                    
+                    SqlDataAdapter adapter = new SqlDataAdapter();
+                    adapter.InsertCommand = command;
+                    adapter.InsertCommand.ExecuteNonQuery();
+                    command.Dispose();
+
+                }
+                cnn.Close();
+            }
+        }
+
+        private void ShowHistory(object sender, RoutedEventArgs e)
+        { 
+            string history = "";
+            cnn = new SqlConnection(connectionString);
+
+            cnn.Open();
+            using(SqlCommand command = 
+                new SqlCommand("SELECT * FROM History ORDER BY CId DESC", cnn))
+            {
+                SqlDataReader dataReader = command.ExecuteReader();
+                if(dataReader.Read()) history = dataReader.GetValue(1).ToString();
+            }
+            cnn.Close();
+
+            calculation.SetFromHistory(history);
+            ShowData();
         }
     }
 }
